@@ -393,38 +393,53 @@ function getDT(date) {
 }
 
 
-function displayDT() {
+/*
+ * Generate the DT HTML
+ */
+function generateDT() {
 	var now = new Date();
 	if (now.getHours() < 3) {
 		now = addDaysToDate(now, -1);
 	}
 
-	document.write("<table>")
-	document.write("<tbody>")
-	document.write("<tr>")
-	document.write("  <th>Day</th>")
-	document.write("  <th>Date</th>")
-	document.write("  <th>Devotional Text</th>")
-	document.write("</tr>")
+	var r = "";
+	r += "<table class=\"dt\">";
+	r += "<tbody>";
+	r += "<tr>";
+	r += "  <th>Day</th>";
+	r += "  <th>Date</th>";
+	r += "  <th>Devotional Text</th>";
+	r += "</tr>";
 
 	var date = addDaysToDate(now, -4);
-	for (var i = 0; i < 7; i++) {
+	for (var i = -3; i <= 3; i++) {
 		date = addDaysToDate(date, 1);
 		dt = getDT(date);
 		if (dt == null) {
 			continue;
 		}
 		var url = "http://www.biblegateway.com/passage/?version=ESV&search=" + encodeURIComponent(dt.dt);
-		document.write("<tr>")
-		document.write("  <td>" + DAYS_OF_WEEK[date.getDay()] + "</td>")
-		document.write("  <td>" + (date.getMonth() + 1) + "/" + date.getDate() + "</td>")
-		document.write("  <td><a href=\"" + url + "\" target=\"_blank\">" + dt.dt + "</a></td>")
-		document.write("</tr>")
+		if (i == 0) {
+			r += "<tr class=\"dt-today\">";
+		}
+		else {
+			r += "<tr>";
+		}
+		r += "  <td>" + DAYS_OF_WEEK[date.getDay()] + "</td>";
+		r += "  <td>" + (date.getMonth() + 1) + "/" + date.getDate() + "</td>";
+		r += "  <td><a href=\"" + url + "\" target=\"_blank\">" + dt.dt + "</a></td>";
+		r += "</tr>";
 	}
 
-	document.write("</tbody>")
-	document.write("</table>")
+	r += "</tbody>";
+	r += "</table>";
+	return r;
 }
 
-displayDT();
 
+/*
+ * Display DT within the given element
+ */
+function displayDT(parentId) {
+	document.getElementById(parentId).innerHTML = generateDT();
+}

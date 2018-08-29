@@ -1,0 +1,9 @@
+table.dt th {
+  text-transform: uppercase;
+  color: #8a8a8a;
+  text-align: left;
+}
+
+table.dt .dt-today {
+  font-weight: bolder;
+}

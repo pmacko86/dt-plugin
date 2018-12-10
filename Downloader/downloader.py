@@ -102,6 +102,8 @@ def get_webpage_for_month(year, month):
         if os.path.isfile(cache_path):
             with open(cache_path) as f:
                 contents = f.read()
+    else:
+        cache_path = None
 
     if contents is None:
         data = urllib.parse.urlencode({
@@ -120,10 +122,11 @@ def get_webpage_for_month(year, month):
             charset = "utf-8"
             content_type = response.getheader("Content-Type", default="charset=utf-8").split(";")
             for s in content_type:
-                if s.startswith("charset="): charset = s[8:]
+                if s.startswith("charset="):
+                    charset = s[8:]
             contents = response.read().decode(charset)
         except Exception as err:
-            raise Exception("Cannot open the URL: " + str(err));
+            raise Exception("Cannot open the URL: " + str(err))
 
         if cache:
             with open(cache_path, "w") as f:
@@ -136,9 +139,11 @@ def extract_form_field(lines, name):
     for l in lines:
         s = '<input type="hidden" name="' + name + '" value="'
         x = l.find(s)
-        if x < 0: continue
+        if x < 0:
+            continue
         e = l.find('"', x + len(s) + 1)
-        if e < 0: continue
+        if e < 0:
+            continue
         return l[x + len(s):e]
     raise Exception("Form field '" + name + "' does not exist on the page.")
 
@@ -162,12 +167,15 @@ def sanitize_verses(verses):
     second = verses[x + 3:].split(":")
     if len(first) != 2 or len(second) != 2: return verses
 
-    if first == second: return verses[0:x]
-    elif first[0] == second[0]: return first[0] + ":" + first[1] + "-" + second[1]
-    else: return verses
+    if first == second:
+        return verses[0:x]
+    elif first[0] == second[0]:
+        return first[0] + ":" + first[1] + "-" + second[1]
+    else:
+        return verses
 
 
-def get_dt_for_month(year, month):
+def output_dt_for_month(year, month, output):
     contents = get_webpage_for_month(year, month)
     lines = contents.split("\n")
 
@@ -206,23 +214,48 @@ def get_dt_for_month(year, month):
                         elif entry_id == 1:
                             if book is None:
                                 raise Exception("Cannot determine the book name for DT")
-                            output_dt(year, month, day, book, sanitize_verses(v))
+                            output.output_dt(year, month, day, book, sanitize_verses(v))
                         entry_id += 1
 
 
-def output_dt(year, month, day, book, verses):
-    b = book
-    v = verses
-    print("{ year: " + str(year) + ", month: " + str(month) + ", day: " + str(day)
-          + ", dt: \"" + b + " " + v + "\" },")
+class OutputCsv:
+
+    def before_output(self):
+        print("year,month,day,dt")
+
+    def output_dt(self, year, month, day, book, verses):
+        b = book
+        v = verses
+        print(str(year) + "," + str(month) + "," + str(day)
+              + "," + b + " " + v)
+
+    def after_output(self):
+        pass
+
+
+class OutputJson:
+
+    def before_output(self):
+        print("var DT_DATA = [")
+
+    def output_dt(self, year, month, day, book, verses):
+        b = book
+        v = verses
+        print("{ year: " + str(year) + ", month: " + str(month) + ", day: " + str(day)
+              + ", dt: \"" + b + " " + v + "\" },")
+
+    def after_output(self):
+        print("null]")
 
 
 def usage():
     print("Usage: downloader.py")
     print()
     print("Options:")
-    print("  -c, --cache        Cache the downloaded web pages")
+    print("  -c, --csv          Print as CSV")
     print("  -h, --help         Print this usage information and exit")
+    print("  -j, --json         Print as JSON")
+    print("  -n, --no-cache     Do not cache the downloaded web pages")
     print("  -y, --year N       Set the year")
 
 
@@ -230,32 +263,38 @@ def main():
     global cache, url
 
     try:
-        opts, args = getopt.gnu_getopt(sys.argv[1:], "chy:", ["cache", "help", "year="])
+        opts, args = getopt.gnu_getopt(sys.argv[1:], "chjny:",
+                                       ["csv", "help", "json", "no-cache", "year="])
     except getopt.GetoptError as err:
         print(err)
         usage()
         sys.exit(2)
 
-    cache = False
+    output = OutputJson()
+    cache = True
     url = "http://www.su.or.kr/03bible/daily/bibleCalendar.do"
     year = datetime.datetime.now().year
 
     for o, a in opts:
-        if o in ("-c", "--cache"):
-            cache = True
+        if o in ("-c", "--csv"):
+            output = OutputCsv()
         elif o in ("-h", "--help"):
             usage()
             sys.exit()
+        elif o in ("-j", "--json"):
+            output = OutputJson()
+        elif o in ("-n", "--no-cache"):
+            cache = False
         elif o in ("-y", "--year"):
             year = int(a)
         else:
             assert False, "unhandled option"
 
     try:
-        print("var DT_DATA = [")
+        output.before_output()
         for m in range(1, 13):
-            get_dt_for_month(year, m)
-        print("null]")
+            output_dt_for_month(year, m, output)
+        output.after_output()
     except Exception as err:
         print("Error: " + str(err))
         sys.exit(1)

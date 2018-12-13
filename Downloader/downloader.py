@@ -51,18 +51,26 @@ ENGLISH_TO_KOREAN_BOOK_NAMES = [
     "Zechariah", "스가랴",
     "Malachi", "말라기",
     "Matthew", "마태",
+    "Matthew", "마태복음",
     "Mark", "마가",
+    "Mark", "마가복음",
     "Luke", "누가",
+    "Luke", "누가복음",
     "John", "요한",
+    "John", "요한복음",
     "Acts", "사도",
     "Acts", "사도행전",
     "Romans", "로마",
+    "Romans", "로마서",
     "1 Corinthians", "고린도 첫째",
     "2 Corinthians", "고린도 둘째",
     "Galatians", "갈라디아",
     "Ephesians", "에베소",
+    "Ephesians", "에베소서",
     "Philippians", "빌립보",
+    "Philippians", "빌립보서",
     "Colossians", "골로새",
+    "Colossians", "골로새서",
     "1 Thessalonians", "데살로니가 첫째",
     "1 Thessalonians", "데살로니가전서",
     "2 Thessalonians", "데살로니가 둘째",
@@ -71,17 +79,25 @@ ENGLISH_TO_KOREAN_BOOK_NAMES = [
     "2 Timothy", "디모데 둘째",
     "2 Timothy", "디모데후서",
     "Titus", "디도",
+    "Titus", "디도서",
     "Philemon", "빌레몬",
+    "Philemon", "빌레몬서",
     "Hebrews", "히브리",
+    "Hebrews", "히브리서",
     "James", "야고보",
+    "James", "야고보서",
     "1 Peter", "베드로 첫째",
     "2 Peter", "베드로 둘째",
     "1 John", "요한 첫째",
+    "1 John", "요한일서",
     "2 John", "요한 둘째",
+    "2 John", "요한이서",
     "3 John", "요한 셋째",
+    "3 John", "요한삼서",
     "Jude", "유다",
-    "Revelation", "계시록"]
-
+    "Jude", "유다서",
+    "Revelation", "계시록",
+    "Revelation", "요한계시록"]
 
 def get_cache_path_for_month(year, month):
     return "cache-" + "{:0>4d}".format(year) + "-" + "{:0>2d}".format(month) + ".html"
@@ -153,8 +169,6 @@ def translate_book_name(name):
         k = ENGLISH_TO_KOREAN_BOOK_NAMES[i]
         v = ENGLISH_TO_KOREAN_BOOK_NAMES[i+1]
         if k == name or v == name:
-            return k
-        if name.startswith(v) or name.endswith(v):
             return k
     raise Exception("Cannot translate '" + name + "' to English.")
 

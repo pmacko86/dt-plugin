@@ -67,7 +67,7 @@ var DT_DATA = [
 { year: 2019, month: 1, day: 5, dt: "Psalms 119:65-80" },
 { year: 2019, month: 1, day: 6, dt: "Psalms 119:81-96" },
 { year: 2019, month: 1, day: 7, dt: "Psalms 119:97-112" },
-{ year: 2019, month: 1, day: 8, dt: "Psalms 19:113-128" },
+{ year: 2019, month: 1, day: 8, dt: "Psalms 119:113-128" },
 { year: 2019, month: 1, day: 9, dt: "Psalms 119:129-144" },
 { year: 2019, month: 1, day: 10, dt: "Psalms 119:145-160" },
 { year: 2019, month: 1, day: 11, dt: "Psalms 119:161-176" },

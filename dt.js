@@ -122,7 +122,7 @@ var DT_DATA = [
 { year: 2019, month: 3, day: 1, dt: "Nehemiah 1:1-11" },
 { year: 2019, month: 3, day: 2, dt: "Nehemiah 2:1-20" },
 { year: 2019, month: 3, day: 3, dt: "Nehemiah 3:1-32" },
-{ year: 2019, month: 3, day: 4, dt: "Nehemiah 4:1-5" },
+{ year: 2019, month: 3, day: 4, dt: "Nehemiah 4:1 - 5:5" },
 { year: 2019, month: 3, day: 5, dt: "Nehemiah 5:6-19" },
 { year: 2019, month: 3, day: 6, dt: "Nehemiah 6:1-14" },
 { year: 2019, month: 3, day: 7, dt: "Nehemiah 6:15 - 7:4" },

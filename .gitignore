@@ -1,3 +1,5 @@
 *.swp
 .idea
 cache-*.html
+.DS_Store
+*.csv
